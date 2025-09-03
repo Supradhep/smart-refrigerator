@@ -1,4 +1,4 @@
-forzen beans
+frozen beans
 
 apple
 snake
