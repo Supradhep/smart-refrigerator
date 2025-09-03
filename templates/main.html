@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refrigerator Management System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='refrigerator.css') }}">
+    <style>
+        .dashboard-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .priority-high {
+            color: #d9534f;
+            font-weight: bold;
+        }
+        .priority-medium {
+            color: #f0ad4e;
+        }
+        .shopping-preview {
+            margin-top: 15px;
+        }
+        .shopping-item {
+            padding: 5px 0;
+            border-bottom: 1px dotted #eee;
+        }
+        .item-reason {
+            font-size: 0.85em;
+            color: #666;
+            font-style: italic;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            margin-left: 8px;
+        }
+        .expired-badge {
+            background-color: #d9534f;
+            color: white;
+        }
+        .expiring-badge {
+            background-color: #f0ad4e;
+            color: white;
+        }
+        .low-badge {
+            background-color: #5bc0de;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>SMART REFRIGERATOR MANAGEMENT SYSTEM</h1>
+        <p>Welcome, {{ user }}!</p>
+    </header>
+
+    <div class="container">
+        <div class="buttons">
+            <a href="{{ url_for('add') }}" class="btn">Add Ingredient</a>
+            <a href="{{ url_for('taking') }}" class="btn">Take Ingredient</a>
+            <a href="{{ url_for('recipe') }}" class="btn">Recipes</a>
+            <a href="{{ url_for('shoppinglist') }}" class="btn">Shopping List</a>
+            <a href="{{ url_for('notes') }}" class="btn">Notes</a>
+            <a href="{{ url_for('logout') }}" class="btn">Logout</a>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Notifications Section -->
+            <div class="dashboard-section">
+                <h2>NOTIFICATIONS</h2>
+                {% if expired %}
+                    <div class="alert">
+                        <p>Expired ingredients:</p>
+                        <ul>
+                            {% for item in expired %}
+                            <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% else %}
+                    <p>No expired ingredients</p>
+                {% endif %}
+
+                {% if nearly_expired %}
+                    <div class="alert">
+                        <p>Ingredients expiring soon:</p>
+                        <ul>
+                            {% for item in nearly_expired %}
+                            <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                {% if low_quantity %}
+                    <div class="alert">
+                        <p>Ingredients with low quantity:</p>
+                        <ul>
+                            {% for item in low_quantity %}
+                            <li>{{ item.name }} ({{ item.quantity }} {{ item.unit }})</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Shopping List Preview -->
+            <div class="dashboard-section">
+                <h2>SHOPPING LIST PREVIEW <small>(<a href="{{ url_for('shoppinglist') }}">View All</a>)</small></h2>
+                {% if shopping_preview %}
+                    <div class="shopping-preview">
+                        <ul>
+                            {% for item in shopping_preview %}
+                            <li class="shopping-item priority-{{ item.priority }}">
+                                {{ item.name }}
+                                {% if item.details %}<small>({{ item.details }})</small>{% endif %}
+                                <span class="item-reason">{{ item.reason }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% if more_items_count > 0 %}
+                        <p>... plus {{ more_items_count }} more items</p>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <p>Your shopping list is empty</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Current Inventory -->
+        <div class="dashboard-section">
+            <h2>CURRENT INVENTORY</h2>
+            {% if ingredients %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Quantity</th>
+                            <th>Added On</th>
+                            <th>Expires On</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ing in ingredients %}
+                        <tr>
+                            <td>{{ ing.name }}</td>
+                            <td>{{ ing.quantity }} {{ ing.unit }}</td>
+                            <td>{{ ing.added_date }}</td>
+                            <td>{{ ing.expiry_date }}</td>
+                            <td>
+                                {% if ing.days_remaining < 0 %}
+                                    <span class="status-badge expired-badge">Expired</span>
+                                {% elif ing.days_remaining <= 2 %}
+                                    <span class="status-badge expiring-badge">Expiring</span>
+                                {% elif ((ing.unit.lower() in ['kg', 'kgs'] and ing.quantity < 1.0) or 
+                                       (ing.unit.lower() in ['l', 'liter', 'liters'] and ing.quantity < 1.0))%}
+                                    <span class="status-badge low-badge">Low</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No ingredients available.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Smart Refrigerator - Shopping List</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='refrigerator.css') }}">
+    <style>
+        .priority-high {
+            color: #d9534f;
+            font-weight: bold;
+        }
+        .priority-medium {
+            color: #f0ad4e;
+        }
+        .shopping-category {
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+        .shopping-item {
+            padding: 8px 0;
+            border-bottom: 1px dotted #ddd;
+        }
+        .item-reason {
+            font-size: 0.9em;
+            color: #666;
+            font-style: italic;
+        }
+        .add-item-form {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Shopping List</h1>
+    </header>
+    <div class="container">
+        <section class="btn">
+            <a href="{{ url_for('home') }}" style="text-decoration: none;">Go to Home</a>
+        </section>
+
+        <!-- Add Standard Ingredient Form -->
+        <div class="add-item-form">
+            <h3>Add Standard Ingredient</h3>
+            <form method="POST" action="{{ url_for('shoppinglist') }}">
+                <input type="text" name="name" placeholder="Ingredient name" required>
+                <button type="submit">Add to Standard List</button>
+            </form>
+        </div>
+
+        <!-- Shopping List Sections -->
+        <div class="shopping-list">
+            <!-- Items to Restock -->
+            <div class="shopping-category">
+                <h2>Items to Restock</h2>
+                {% if shopping_list %}
+                    <ul>
+                        {% for item in shopping_list if item.type == "restock" %}
+                            <li class="shopping-item priority-{{ item.priority }}">
+                                {{ item.name }} ({{ item.details }})
+                                <span class="item-reason">- {{ item.reason }}</span>
+                            </li>
+                        {% else %}
+                            <li>No items need restocking at this time</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No items need restocking at this time</p>
+                {% endif %}
+            </div>
+
+            <!-- Missing Standard Items -->
+            <div class="shopping-category">
+                <h2>Missing Standard Items</h2>
+                {% if shopping_list %}
+                    <ul>
+                        {% for item in shopping_list if item.type == "standard" %}
+                            <li class="shopping-item priority-{{ item.priority }}">
+                                {{ item.name }}
+                                <span class="item-reason">- {{ item.reason }}</span>
+                            </li>
+                        {% else %}
+                            <li>All standard items are in stock</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>All standard items are in stock</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Standard Ingredients Management -->
+        <div class="standard-ingredients">
+            <h2>Manage Standard Ingredients</h2>
+            {% if singredients %}
+                <ul>
+                    {% for ingredient in singredients %}
+                        <li class="shopping-item">
+                            {{ ingredient.name }}
+                            <form method="POST" action="{{ url_for('shoppinglist') }}" style="display: inline;">
+                                <input type="hidden" name="remove_name" value="{{ ingredient.name }}">
+                                <button type="submit" class="btn-remove">Remove</button>
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No standard ingredients set up yet</p>
+            {% endif %}
+        </div>
+
+        <script src="{{ url_for('static', filename='refri.js') }}"></script>
+    </div>
+</body>
+</html>

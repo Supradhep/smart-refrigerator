@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<style>
+
+body {    
+        background-color: #A7D397;
+        font-family: 'Abril Fatface', cursive;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        flex-direction: column;
+        background-image: url("https://i.pinimg.com/736x/33/ef/8b/33ef8b9c0b902154a6cd4103a21275ef.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+.container {
+    background-color: rgba(255, 255, 255, 0); /* Fully Transparent */
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    width: 90%;
+    max-width: 350px;
+    color: white;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease-in-out;
+}
+.container:hover {
+    transform: translateY(-5px);
+}
+h2 {
+    background: linear-gradient(90deg, #006400, #32CD32); /* green */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+label {
+    background: linear-gradient(90deg, #228B22, #32CD32); /* Forest Green to Lime Green */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+input {
+    padding: 12px;
+    border: 2px solid #2E7D32; /* Deep Leaf Green */
+    border-radius: 8px;
+    background-color: rgba(232, 245, 233, 0.8); /* Soft Mint with Transparency */
+    color: black;
+}
+button {
+    background: linear-gradient(90deg, #006400, #32CD32); /* Dark Green to Lime Green */
+    border: none;
+    padding: 14px;
+    cursor: pointer;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    transition: background 0.3s ease-in-out, transform 0.2s;
+}
+button:hover {
+    background: linear-gradient(90deg, #228B22, #006400);
+    transform: scale(1.05);
+}
+</style>
+
+<body>
+    <h1>Login</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul>
+        {% for category, message in messages %}
+          <li><strong>{{ category.capitalize() }}:</strong> {{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    <form method="POST">
+        <label for="email">Email:</label><br>
+        <input type="email" name="email" required><br><br>
+
+        <label for="password">Password:</label><br>
+        <input type="password" name="password" required><br><br>
+
+        <button type="submit">Login</button>
+    </form>
+    <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign up here</a>.</p>
+</body>
+</html>

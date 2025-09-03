@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='refrigerator.css') }}">
+</head>
+<body>
+    <nav>
+    <header >
+        <h1>SMART REFRIGERATOR MANAGEMENT SYSTEM</h1>
+    </header>
+    </nav> 
+    
+    <div class="container">
+        <div class="buttonss">
+            <button class="btnn" onclick="navigateTo('add.html')">Add things to the refrigerator</button>
+            <button class="btnn" onclick="navigateTo('taking.html')">Taking things from the refrigerator</button>
+            
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='refri.js') }}"></script>
+   
+
+</body>
+</html>

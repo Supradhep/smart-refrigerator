@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Ingredient</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='refrigerator.css') }}">
+</head>
+<body>
+    <h1>Add a New Ingredient</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+        <div class="message {{ category }}">
+          {{ message }}
+        </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="container">
+        <div class="formm">
+            <form method="POST">
+                <label for="name">Ingredient Name:</label>
+                <input type="text" id="name" name="name" required>
+                
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" name="quantity" step="0.01" min="0" required>
+                
+                <label for="unit">Unit:</label>
+                <select id="unit" name="unit" required>
+                    <option value="g">grams</option>
+                    <option value="kg">kilograms</option>
+                    <option value="ml">milliliters</option>
+                    <option value="L">liters</option>
+                    <option value="pieces">pieces</option>
+                    <option value="cups">cups</option>
+                    <option value="tbsp">tablespoons</option>
+                    <option value="tsp">teaspoons</option>
+                </select>
+                
+                <label for="expires_in">Expires in (days):</label>
+                <input type="number" id="expires_in" name="expires_in" min="1" required>
+                
+                <button type="submit">Add Ingredient</button>
+            </form>
+        </div>
+        
+        <div class="btn">
+            <a href="{{ url_for('home') }}">Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>
